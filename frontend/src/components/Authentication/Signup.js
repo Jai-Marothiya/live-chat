@@ -43,7 +43,7 @@ const Signup = () => {
       });
       return;
     }
-    console.log(name, email, password, pic);
+    // console.log(name, email, password, pic);
     try {
       const config = {
         headers: {
@@ -60,7 +60,7 @@ const Signup = () => {
         },
         config
       );
-      console.log(data);
+      // console.log(data);
       toast({
         title: "Registration Successful",
         status: "success",
@@ -101,8 +101,8 @@ const Signup = () => {
       const data = new FormData();
       data.append("file", pics);
       data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "piyushproj");
-      fetch("https://api.cloudinary.com/v1_1/piyushproj/image/upload", {
+      data.append("cloud_name", "dapoxef3i");
+      fetch("https://api.cloudinary.com/v1_1/dapoxef3i/image/upload", {
         method: "post",
         body: data,
       })

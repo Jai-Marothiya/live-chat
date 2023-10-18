@@ -4,7 +4,7 @@ const generateToken = require("../config/generateToken");
 
 //@description     Get or Search all users
 //@route           GET /api/user?search=
-//@access          Public
+//@access          Private
 const allUsers = asyncHandler(async (req, res) => {
   const keyword = req.query.search
     ? {
@@ -68,6 +68,7 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
+    // console.log("Token generated: ");
     res.json({
       _id: user._id,
       name: user.name,
@@ -76,6 +77,7 @@ const authUser = asyncHandler(async (req, res) => {
       pic: user.pic,
       token: generateToken(user._id),
     });
+
   } else {
     res.status(401);
     throw new Error("Invalid Email or Password");
