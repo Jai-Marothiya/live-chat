@@ -21,7 +21,7 @@ import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
-
+import { CometChat } from "@cometchat-pro/chat";
 const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [groupChatName, setGroupChatName] = useState();
@@ -82,6 +82,19 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
         config
       );
 
+      //Cometchat Remane Group
+      var GUID = selectedChat.GUID;
+      var groupType = CometChat.GROUP_TYPE.PUBLIC;
+      var group = new CometChat.Group(GUID, groupChatName, groupType);
+
+      CometChat.updateGroup(group).then(
+        group => {
+          console.log("Groups details updated successfully:", group);
+        }, error => {
+          console.log("Group details update failed with exception:", error);
+        }
+      );
+
       console.log(data._id);
       // setSelectedChat("");
       setSelectedChat(data);
@@ -140,6 +153,20 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
         config
       );
 
+      let GUID = selectedChat.GUID;
+      let UID =  user1.UID;
+      let membersList = [
+        new CometChat.GroupMember(UID, CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT)
+      ];
+
+      CometChat.addMembersToGroup(GUID, membersList, []).then(
+        response => {
+          console.log("response", response);
+        }, error => {
+          console.log("Something went wrong", error);
+        }
+      );
+
       setSelectedChat(data);
       setFetchAgain(!fetchAgain);
       setLoading(false);
@@ -183,6 +210,16 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
           userId: user1._id,
         },
         config
+      );
+
+      var GUID = selectedChat.GUID;
+
+      CometChat.leaveGroup(GUID).then(
+        hasLeft => {
+          console.log("Group left successfully:", hasLeft);
+        }, error => {
+          console.log("Group leaving failed with exception:", error);
+        }
       );
 
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);

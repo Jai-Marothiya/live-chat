@@ -7,6 +7,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { ChatState } from "../../Context/ChatProvider";
+import { CometChat } from "@cometchat-pro/chat";
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -55,6 +56,28 @@ const Login = () => {
       });
       setUser(data);
       localStorage.setItem("userInfo", JSON.stringify(data));
+
+
+
+      //Cometchat Login
+      let UID = data?data.UID:null;
+      let authKey = "3c8abaea0d413033086e9b5fff7bb5458cb8515b";
+      // console.log(data," ", UID);
+      UID!==null && CometChat.getLoggedinUser().then(
+        user => {
+          if(!user){
+            CometChat.login(UID, authKey).then(
+              user => {
+                console.log("Login Successful:", { user });
+              }, error => {
+                console.log("Login failed with exception:", { error });
+              }
+            );
+          }
+        }, error => {
+          console.log("Something went wrong", error);
+        }
+      );
       setLoading(false);
       history.push("/chats");
     } catch (error) {

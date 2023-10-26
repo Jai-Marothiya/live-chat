@@ -6,11 +6,12 @@ import { IconButton, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ArrowBackIcon, ArrowDownIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon} from "@chakra-ui/icons";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
 import animationData from "../animations/typing.json";
+import { CometChat } from "@cometchat-pro/chat";
 
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
@@ -89,6 +90,37 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
+
+        //Cometchat Send messages
+        if(selectedChat.isGroupChat===false){
+          let receiverID = selectedChat.users[1].UID;
+          let messageText = newMessage;
+          let receiverType = CometChat.RECEIVER_TYPE.USER;
+          let textMessage = new CometChat.TextMessage(receiverID, messageText, receiverType);
+          console.log("receiverID: ",receiverID);
+          CometChat.sendMessage(textMessage).then(
+            message => {
+              console.log("Message sent successfully:", message);
+            }, error => {
+              console.log("Message sending failed with error:", error);
+            }
+          );
+        }else{
+          let receiverID = selectedChat.GUID;
+          let messageText = newMessage;
+          let receiverType = CometChat.RECEIVER_TYPE.GROUP;
+          let textMessage = new CometChat.TextMessage(receiverID, messageText, receiverType);
+
+          CometChat.sendMessage(textMessage).then(
+            message => {
+              console.log("Message sent successfully:", message);
+            }, error => {
+              console.log("Message sending failed with error:", error);
+            }
+          );
+        }
+
+
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
@@ -101,6 +133,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           position: "bottom",
         });
       }
+
+
     }
   };
 

@@ -6,6 +6,8 @@ import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import { CometChat } from "@cometchat-pro/chat";
+import { v4 as uuidv4 } from 'uuid';
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -33,6 +35,7 @@ const Signup = () => {
       setPicLoading(false);
       return;
     }
+    var UID = uuidv4();
     if (password !== confirmpassword) {
       toast({
         title: "Passwords Do Not Match",
@@ -44,6 +47,7 @@ const Signup = () => {
       return;
     }
     // console.log(name, email, password, pic);
+    console.log("UID: ",UID);
     try {
       const config = {
         headers: {
@@ -57,6 +61,7 @@ const Signup = () => {
           email,
           password,
           pic,
+          UID
         },
         config
       );
@@ -68,7 +73,23 @@ const Signup = () => {
         isClosable: true,
         position: "bottom",
       });
-      localStorage.setItem("userInfo", JSON.stringify(data));
+      data && localStorage.setItem("userInfo", JSON.stringify(data));
+
+      // CometChat Registration
+      let authKey = "3c8abaea0d413033086e9b5fff7bb5458cb8515b";
+      var user = new CometChat.User(UID);
+
+      user.setName(name);
+
+      CometChat.createUser(user, authKey).then(
+          user => {
+              console.log("user created", user);
+          }, error => {
+              console.log("error", error);
+          }
+      )
+
+
       setPicLoading(false);
       history.push("/chats");
     } catch (error) {
