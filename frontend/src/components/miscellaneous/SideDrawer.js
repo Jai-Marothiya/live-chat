@@ -31,6 +31,7 @@ import { Effect } from "react-notification-badge";
 import { getSender } from "../../config/ChatLogics";
 import UserListItem from "../userAvatar/UserListItem";
 import { ChatState } from "../../Context/ChatProvider";
+import { CometChat } from "@cometchat-pro/chat";
 
 function SideDrawer() {
   const [search, setSearch] = useState("");
@@ -53,6 +54,13 @@ function SideDrawer() {
 
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
+    CometChat.logout().then(
+      () => {
+        console.log("Logout completed successfully");
+      },error=>{
+        console.log("Logout failed with exception:",{error});
+      }
+    );
     history.push("/");
   };
 

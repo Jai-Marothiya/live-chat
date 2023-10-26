@@ -18,6 +18,8 @@ import { useState } from "react";
 import { ChatState } from "../../Context/ChatProvider";
 import UserBadgeItem from "../userAvatar/UserBadgeItem";
 import UserListItem from "../userAvatar/UserListItem";
+import { CometChat } from "@cometchat-pro/chat";
+import { v4 as uuidv4 } from 'uuid';
 
 const GroupChatModal = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -79,6 +81,8 @@ const GroupChatModal = ({ children }) => {
   };
 
   const handleSubmit = async () => {
+    // console.log("Clicked")
+    var GUID = uuidv4();
     if (!groupChatName || !selectedUsers) {
       toast({
         title: "Please fill all the feilds",
@@ -101,6 +105,7 @@ const GroupChatModal = ({ children }) => {
         {
           name: groupChatName,
           users: JSON.stringify(selectedUsers.map((u) => u._id)),
+          GUID,
         },
         config
       );
@@ -113,6 +118,19 @@ const GroupChatModal = ({ children }) => {
         isClosable: true,
         position: "bottom",
       });
+
+      // Cometchat Create Group
+      let groupType = CometChat.GROUP_TYPE.PUBLIC;
+      let group = new CometChat.Group(GUID, groupChatName, groupType);
+      let members= selectedUsers.map((u) => new CometChat.GroupMember(u.UID, CometChat.GROUP_MEMBER_SCOPE.PARTICIPANT))
+      // console.log("Group peoples: ",members);
+      CometChat.createGroupWithMembers(group, members).then(
+        response => {
+          console.log("Group created successfully", response);
+        }, error => {
+          console.log("Some error occured while creating group", error)
+        }
+      );
     } catch (error) {
       toast({
         title: "Failed to Create the Chat!",
@@ -192,3 +210,5 @@ const GroupChatModal = ({ children }) => {
 };
 
 export default GroupChatModal;
+
+
