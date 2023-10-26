@@ -16,10 +16,9 @@ const Login = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
-  // const [UID, setUID] = useState(false);
 
   const history = useHistory();
-  const { user,setUser } = ChatState();
+  const { setUser } = ChatState();
 
   const submitHandler = async () => {
     setLoading(true);
@@ -61,18 +60,17 @@ const Login = () => {
 
 
       //Cometchat Login
-      let UID = user?user.UID:"1234";
+      let UID = data?data.UID:null;
       let authKey = "3c8abaea0d413033086e9b5fff7bb5458cb8515b";
-      console.log(data," ", UID);
-      UID!=="1234" && CometChat.getLoggedinUser().then(
+      // console.log(data," ", UID);
+      UID!==null && CometChat.getLoggedinUser().then(
         user => {
-          if(!user && UID!=="1234"){
+          if(!user){
             CometChat.login(UID, authKey).then(
               user => {
-                // console.log(UID," ", authKey);
                 console.log("Login Successful:", { user });
               }, error => {
-                console.log(UID," ", authKey);
+                console.log(UID, " ", authKey);
                 console.log("Login failed with exception:", { error });
               }
             );
