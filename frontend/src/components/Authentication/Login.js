@@ -70,6 +70,7 @@ const Login = () => {
               user => {
                 console.log("Login Successful:", { user });
               }, error => {
+                console.log(UID," ", authKey);
                 console.log("Login failed with exception:", { error });
               }
             );
