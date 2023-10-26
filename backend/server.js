@@ -58,6 +58,12 @@ const io = require("socket.io")(server, {
   },
 });
 
+io.on('console', function(msg){
+  console.log(msg);
+});
+  
+io.emit('console', 'test');
+
 io.on("connection", (socket) => {
   console.log("Connected to socket.io");
   socket.on("setup", (userData) => {

@@ -23,9 +23,9 @@ const allUsers = asyncHandler(async (req, res) => {
 //@route           POST /api/user/
 //@access          Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, pic } = req.body;
-
-  if (!name || !email || !password) {
+  const { name, email, password, UID, pic} = req.body;
+  console.log("UID: ",UID);
+  if (!name || !email || !password || !UID) {
     res.status(400);
     throw new Error("Please Enter all the Feilds");
   }
@@ -42,6 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
     email,
     password,
     pic,
+    UID
   });
 
   if (user) {
@@ -50,8 +51,9 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
+      UID: user.UID,
       pic: user.pic,
-      token: generateToken(user._id),
+      token: generateToken(user._id)
     });
   } else {
     res.status(400);
@@ -68,12 +70,11 @@ const authUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {
-    // console.log("Token generated: ");
     res.json({
       _id: user._id,
       name: user.name,
       email: user.email,
-      isAdmin: user.isAdmin,
+      UID: user.UID,
       pic: user.pic,
       token: generateToken(user._id),
     });
