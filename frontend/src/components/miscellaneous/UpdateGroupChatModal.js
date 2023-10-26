@@ -212,9 +212,9 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
         config
       );
 
-      var GUID = selectedChat.GUID;
+      var GUID = selectedChat?selectedChat.GUID:null;
 
-      CometChat.leaveGroup(GUID).then(
+      GUID && CometChat.leaveGroup(GUID).then(
         hasLeft => {
           console.log("Group left successfully:", hasLeft);
         }, error => {
