@@ -63,13 +63,13 @@ const Login = () => {
       //Cometchat Login
       let UID = user?user.UID:null;
       let authKey = "3c8abaea0d413033086e9b5fff7bb5458cb8515b";
-      // console.log(data," ", UID);
+      console.log(data," ", UID);
       UID!==null && CometChat.getLoggedinUser().then(
         user => {
-          if(!user){
+          if(!user && UID!==null){
             CometChat.login(UID, authKey).then(
               user => {
-                console.log(UID," ", authKey);
+                // console.log(UID," ", authKey);
                 console.log("Login Successful:", { user });
               }, error => {
                 console.log(UID," ", authKey);
